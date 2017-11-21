@@ -22,9 +22,9 @@ public class CrimeLab {
         for(int i = 0; i < 100; i++) {
             boolean isEven = i % 2 == 0;
             Crime crime = new Crime();
-            crime.setTitle("Cirme #" + i);
+            crime.setTitle("Crime #" + i);
             crime.setSolved(isEven);
-            crime.setPoliceRequired(isEven);
+            crime.setPoliceRequired(!isEven);
             mCrimes.add(crime);
         }
     }

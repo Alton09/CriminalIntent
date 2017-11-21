@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:text="Crime Title"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/imageView"
+        app:layout_constraintRight_toLeftOf="@+id/crime_solved_image"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
@@ -26,13 +26,13 @@
         android:layout_marginTop="8dp"
         android:text="Crime Date"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/imageView"
+        app:layout_constraintRight_toLeftOf="@+id/crime_solved_image"
         app:layout_constraintTop_toBottomOf="@+id/crime_title"
         android:layout_marginRight="8dp"
         app:layout_constraintHorizontal_bias="0.0"/>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/crime_solved_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_solved"
