@@ -1,5 +1,8 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.support.annotation.NonNull;
+
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -7,16 +10,16 @@ import java.util.UUID;
  * Created by john.qualls on 10/20/2017.
  */
 
-public class Crime {
+public class Crime implements Comparable<Crime> {
     private UUID mId;
     private String mTitle;
-    private Date mDate;
+    private String mDate;
     private boolean mSolved;
     private boolean mPoliceRequired;
 
-    public Crime() {
-        mId = UUID.randomUUID();
-        mDate = new Date();
+    public Crime(UUID uuid) {
+        mId = uuid;
+        mDate = DateFormat.getDateInstance(DateFormat.FULL).format(new Date());
     }
 
     public UUID getId() {
@@ -31,11 +34,11 @@ public class Crime {
         mTitle = title;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return mDate;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         mDate = date;
     }
 
@@ -53,5 +56,10 @@ public class Crime {
 
     public void setPoliceRequired(boolean policeRequired) {
         mPoliceRequired = policeRequired;
+    }
+
+    @Override
+    public int compareTo(@NonNull Crime o) {
+        return mId.compareTo(o.getId());
     }
 }

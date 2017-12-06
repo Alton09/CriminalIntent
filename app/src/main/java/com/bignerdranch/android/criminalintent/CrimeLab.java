@@ -3,6 +3,8 @@ package com.bignerdranch.android.criminalintent;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,9 +21,14 @@ public class CrimeLab {
 
     private CrimeLab(Context context) {
         mCrimes = new ArrayList<>();
+        UUID[] uuidArray = new UUID[100];
+        for(int i = 0; i < 100; i++) {
+            uuidArray[i] = UUID.randomUUID();
+        }
+        Arrays.sort(uuidArray);
         for(int i = 0; i < 100; i++) {
             boolean isEven = i % 2 == 0;
-            Crime crime = new Crime();
+            Crime crime = new Crime(uuidArray[i]);
             crime.setTitle("Crime #" + i);
             crime.setSolved(isEven);
             crime.setPoliceRequired(!isEven);
@@ -34,12 +41,8 @@ public class CrimeLab {
     }
 
     public Crime getCrime(UUID id) {
-        Crime result = null;
-        for(Crime crime : mCrimes) {
-            if(crime.getId().equals(id)) {
-                result = crime;
-            }
-        }
-        return result;
+        Crime selectedCrime = new Crime(id);
+        int index = Collections.binarySearch(mCrimes, selectedCrime);
+        return mCrimes.get(index);
     }
 }

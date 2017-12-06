@@ -1,5 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,8 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeListFragment extends Fragment {
+    private static final String EXTRA_CRIME_ID = "crime_id";
+    private static final int START_CRIME_DETAIL = 100;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
 
@@ -36,6 +41,21 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setAdapter(mAdapter);
     }
 
+    private void updateUI(UUID crimeId) {
+        Crime crime = CrimeLab.getInstance(getActivity()).getCrime(crimeId);
+        int index = mAdapter.getItemPosition(crime);
+        mAdapter.notifyItemChanged(index);
+    }
+
+    /**
+     * Invoked when another Fragment/Activity returns to this fragment
+     */
+    public static Intent newReturnIntent(UUID crimeId) {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(EXTRA_CRIME_ID, crimeId);
+        return returnIntent;
+    }
+
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
@@ -52,16 +72,31 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(), mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
-                    .show();
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            startActivityForResult(intent, START_CRIME_DETAIL);
         }
 
         void bind(Crime crime) {
             mCrime = crime;
 
             mTitleTextView.setText(mCrime.getTitle());
-            mDateTextView.setText(mCrime.getDate().toString());
+            mDateTextView.setText(mCrime.getDate());
             mSolvedImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == START_CRIME_DETAIL) {
+            if(data != null) {
+                UUID crimeId = (UUID) data.getSerializableExtra(EXTRA_CRIME_ID);
+                if(crimeId != null) {
+                    updateUI(crimeId);
+                }
+            } else {
+                updateUI();
+            }
         }
     }
 
@@ -89,7 +124,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            CrimeHolder crimeHolder = null;
+            CrimeHolder crimeHolder;
             if(R.layout.list_item_severe_crime == viewType) {
                 crimeHolder = new SevereCrimeHolder(layoutInflater, parent);
             } else {
@@ -117,6 +152,17 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        public int getItemPosition(Crime selectedCrime) {
+            int result = -1;
+            for(Crime crime : mCrimes) {
+                if (crime.equals(selectedCrime)) {
+                    result = mCrimes.indexOf(crime);
+                    break;
+                }
+            }
+            return result;
         }
     }
 }
