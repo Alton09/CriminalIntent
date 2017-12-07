@@ -20,12 +20,12 @@ public class CrimeLab {
     }
 
     private CrimeLab(Context context) {
-        mCrimes = new ArrayList<>();
         UUID[] uuidArray = new UUID[100];
         for(int i = 0; i < 100; i++) {
             uuidArray[i] = UUID.randomUUID();
         }
         Arrays.sort(uuidArray);
+        mCrimes = new ArrayList<>();
         for(int i = 0; i < 100; i++) {
             boolean isEven = i % 2 == 0;
             Crime crime = new Crime(uuidArray[i]);
