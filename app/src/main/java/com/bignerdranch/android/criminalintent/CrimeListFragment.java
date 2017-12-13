@@ -1,6 +1,5 @@
 package com.bignerdranch.android.criminalintent;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,7 +70,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivityForResult(intent, START_CRIME_DETAIL);
         }
 
@@ -155,14 +153,7 @@ public class CrimeListFragment extends Fragment {
         }
 
         public int getItemPosition(Crime selectedCrime) {
-            int result = -1;
-            for(Crime crime : mCrimes) {
-                if (crime.equals(selectedCrime)) {
-                    result = mCrimes.indexOf(crime);
-                    break;
-                }
-            }
-            return result;
+            return mCrimes.indexOf(selectedCrime);
         }
     }
 }
