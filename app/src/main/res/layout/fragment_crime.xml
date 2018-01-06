@@ -25,7 +25,13 @@
     <Button
         android:id ="@+id/crime_date"
         android:layout_width ="match_parent"
-        android:layout_height ="wrap_content"/>
+        android:layout_height ="wrap_content"
+        android:text="@string/date_picker_title"/>
+    <Button
+        android:id="@+id/crime_date_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/date_picker_title_fragment"/>
     <Button
         android:id="@+id/crime_time"
         android:layout_width="match_parent"

@@ -26,11 +26,13 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_DATE_ACTIVITY = 100;
     private Crime mCrime;
     private int mPosition;
     private List<Crime> mCrimes;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mDateFragmentButton;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
     private Intent mReturnIntent;
@@ -105,6 +107,16 @@ public class CrimeFragment extends Fragment {
                 dialog.show(fragmentManager, DIALOG_DATE);
             }
         });
+        mDateFragmentButton = v.findViewById(R.id.crime_date_fragment);
+        updateDateFragment();
+        mDateFragmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DatePickerActivity.class);
+                startActivityForResult(intent, REQUEST_DATE_ACTIVITY);
+            }
+        });
+
         mTimeButton = v.findViewById(R.id.crime_time);
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +154,11 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate() {
-        mDateButton.setText(mCrime.getDateString());
+        mDateButton.setText(mDateButton.getText() + mCrime.getDateString());
+    }
+
+    private void updateDateFragment() {
+        mDateFragmentButton.setText(mDateFragmentButton.getText() + mCrime.getDateString());
     }
 
     private void toggleCrimeNavigationButtons(int position) {
