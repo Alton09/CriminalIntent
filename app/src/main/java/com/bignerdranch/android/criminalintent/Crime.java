@@ -13,13 +13,14 @@ import java.util.UUID;
 public class Crime implements Comparable<Crime> {
     private UUID mId;
     private String mTitle;
-    private String mDate;
+    private Date mDate;
+    private String mDateString;
     private boolean mSolved;
     private boolean mPoliceRequired;
 
     public Crime(UUID uuid) {
         mId = uuid;
-        mDate = DateFormat.getDateInstance(DateFormat.FULL).format(new Date());
+        setDate(new Date());
     }
 
     public UUID getId() {
@@ -34,12 +35,21 @@ public class Crime implements Comparable<Crime> {
         mTitle = title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return mDate;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         mDate = date;
+        mDateString = DateFormat.getDateInstance(DateFormat.FULL).format(mDate);
+    }
+
+    public String getDateString() {
+        return mDateString;
+    }
+
+    public void setDateString(String dateString) {
+        mDateString = dateString;
     }
 
     public boolean isSolved() {
