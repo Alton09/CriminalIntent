@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,15 +8,18 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DatePickerFragment extends DialogFragment {
     public static final String EXTRA_DATE = "com.bignerdranch.android.criminalintent.date";
     private static final String ARG_DATE = "date";
     private DatePicker mDatePicker;
+    private Button mOKButton;
 
     public static DatePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
@@ -37,29 +41,30 @@ public class DatePickerFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_date, null);
         mDatePicker = v.findViewById(R.id.dialog_date_picker);
         mDatePicker.init(year, month, day, null);
+        mOKButton = v.findViewById(R.id.dialog_date_picker_button);
+        mOKButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int year = mDatePicker.getYear();
+                int month = mDatePicker.getMonth();
+                int day = mDatePicker.getDayOfMonth();
+                Date date = new GregorianCalendar(year, month, day).getTime();
+                sendResult(Activity.RESULT_OK, date);
+            }
+        });
         return v;
-/*        return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.date_picker_title)
-                .setView(v)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int year = mDatePicker.getYear();
-                        int month = mDatePicker.getMonth();
-                        int day = mDatePicker.getDayOfMonth();
-                        Date date = new GregorianCalendar(year, month, day).getTime();
-                        sendResult(Activity.RESULT_OK, date);
-                    }
-                })
-                .create();*/
     }
 
     private void sendResult(int resultCode, Date date) {
-        if(getTargetFragment() == null) {
-            return;
-        }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_DATE, date);
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        if(getTargetFragment() != null) {
+            getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+            dismiss();
+        }
+        else {
+            getActivity().setResult(resultCode, intent);
+            getActivity().finish();
+        }
     }
 }

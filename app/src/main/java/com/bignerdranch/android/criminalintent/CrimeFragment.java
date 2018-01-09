@@ -26,7 +26,7 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
-    private static final int REQUEST_DATE_ACTIVITY = 100;
+    private static final int REQUEST_DATE_FRAGMENT = 100;
     private Crime mCrime;
     private int mPosition;
     private List<Crime> mCrimes;
@@ -113,7 +113,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), DatePickerActivity.class);
-                startActivityForResult(intent, REQUEST_DATE_ACTIVITY);
+                startActivityForResult(intent, REQUEST_DATE_FRAGMENT);
             }
         });
 
@@ -144,21 +144,23 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_DATE) {
-                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-                mCrime.setDate(date);
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            if(requestCode == REQUEST_DATE) {
                 updateDate();
             }
+            else if(requestCode == REQUEST_DATE_FRAGMENT) {
+                updateDateFragment();
+            }
         }
-
     }
 
     private void updateDate() {
-        mDateButton.setText(mDateButton.getText() + mCrime.getDateString());
+        mDateButton.setText(getString(R.string.date_picker_title) + mCrime.getDateString());
     }
 
     private void updateDateFragment() {
-        mDateFragmentButton.setText(mDateFragmentButton.getText() + mCrime.getDateString());
+        mDateFragmentButton.setText(getString(R.string.date_picker_title_fragment) + mCrime.getDateString());
     }
 
     private void toggleCrimeNavigationButtons(int position) {
