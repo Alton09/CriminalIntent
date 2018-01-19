@@ -101,10 +101,7 @@ public class CrimeFragment extends Fragment {
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                DatePickerFragment dialog  = DatePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(fragmentManager, DIALOG_DATE);
+                createDatePickerDialog();
             }
         });
         mDateFragmentButton = v.findViewById(R.id.crime_date_fragment);
@@ -112,8 +109,12 @@ public class CrimeFragment extends Fragment {
         mDateFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), DatePickerActivity.class);
-                startActivityForResult(intent, REQUEST_DATE_FRAGMENT);
+                if (getResources().getBoolean(R.bool.isTablet)) {
+                    createDatePickerDialog();
+                } else {
+                    Intent intent = new Intent(getActivity(), DatePickerActivity.class);
+                    startActivityForResult(intent, REQUEST_DATE_FRAGMENT);
+                }
             }
         });
 
@@ -139,6 +140,13 @@ public class CrimeFragment extends Fragment {
         mCrimes = crimeLab.getCrimes();
         toggleCrimeNavigationButtons(mPosition);
         return v;
+    }
+
+    private void createDatePickerDialog() {
+        FragmentManager fragmentManager = getFragmentManager();
+        DatePickerFragment dialog  = DatePickerFragment.newInstance(mCrime.getDate());
+        dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+        dialog.show(fragmentManager, DIALOG_DATE);
     }
 
     @Override
