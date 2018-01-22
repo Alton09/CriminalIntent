@@ -40,6 +40,10 @@ public class CrimeLab {
         return mCrimes;
     }
 
+    public void addCrime(Crime crime) {
+        mCrimes.add(crime);
+    }
+
     public Crime getCrime(UUID id) {
         Crime selectedCrime = new Crime(id);
         int index = Collections.binarySearch(mCrimes, selectedCrime);
