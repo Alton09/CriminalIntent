@@ -1,64 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android ="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width ="match_parent"
-    android:layout_height ="match_parent"
-    android:layout_margin ="16dp"
-    android:orientation ="vertical"> 
-    <TextView 
-        style ="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height ="wrap_content"
-        android:text ="@string/crime_title_label"/>
-    <EditText
-        android:id ="@+id/crime_title"
-        android:layout_width ="match_parent"
-        android:layout_height ="wrap_content"
-        android:hint ="@string/crime_title_hint"/>
-    <TextView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="16dp"
+              android:orientation="vertical">
 
+    <TextView
         style="?android:listSeparatorTextViewStyle"
-        android:layout_width ="match_parent"
-        android:layout_height ="wrap_content"
-        android:text ="@string/crime_details_label"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crime_title_label"/>
+
+    <EditText
+        android:id="@+id/crime_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/crime_title_hint"/>
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crime_details_label"/>
+
     <Button
-        android:id ="@+id/crime_date"
-        android:layout_width ="match_parent"
-        android:layout_height ="wrap_content"/>
-    <Button
-        android:id="@+id/crime_date_fragment"
+        android:id="@+id/crime_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/crime_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/time_picker_title"/>
+
     <CheckBox
-        android:id ="@+id/crime_solved"
-        android:layout_width ="match_parent"
+        android:id="@+id/crime_solved"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_solved_label"/>
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/first_crime_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="First Crime"/>
-
-        <Button
-            android:id="@+id/last_crime_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="Last Crime"/>
-    </android.support.constraint.ConstraintLayout>
 </LinearLayout>
