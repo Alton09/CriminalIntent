@@ -9,24 +9,18 @@ import java.util.UUID;
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
 
-    private List<Crime> mCrimes;
+    private List<Crime> mCrimes = new ArrayList<>();
 
-    public static CrimeLab get(Context context) {
+    public static CrimeLab get() {
         if (sCrimeLab == null) {
-            sCrimeLab = new CrimeLab(context);
+            sCrimeLab = new CrimeLab();
         }
 
         return sCrimeLab;
     }
 
-    private CrimeLab(Context context) {
-        mCrimes = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            Crime crime = new Crime();
-            crime.setTitle("Crime #" + i);
-            crime.setSolved(i % 2 == 0);
-            mCrimes.add(crime);
-        }
+    public void addCrime(Crime crime) {
+        mCrimes.add(crime);
     }
 
     public List<Crime> getCrimes() {
