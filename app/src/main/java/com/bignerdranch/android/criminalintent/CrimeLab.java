@@ -1,5 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,5 +35,13 @@ public class CrimeLab {
         }
 
         return null;
+    }
+
+    public void deleteCrime(UUID id) {
+        Crime selectedCrime = getCrime(id);
+        if (selectedCrime != null) {
+            int selectedCrimeIndex = mCrimes.indexOf(selectedCrime);
+            mCrimes.remove(selectedCrimeIndex);
+        }
     }
 }
