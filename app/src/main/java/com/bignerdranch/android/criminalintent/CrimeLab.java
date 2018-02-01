@@ -2,6 +2,7 @@ package com.bignerdranch.android.criminalintent;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
@@ -29,7 +30,29 @@ public class CrimeLab {
     }
 
     public void addCrime(Crime crime) {
+        ContentValues values = getContentValues(crime);
+        mDatabase.insert(CrimeTable.NAME, null, values);
+    }
 
+    public Cursor queryCrimes(String whereClause, String[] wherArgs) {
+        Cursor cursor = mDatabase.query(
+                CrimeTable.NAME,
+                null, // Null selects all columns
+                whereClause,
+                wherArgs,
+                null,
+                null,
+                null);
+        return cursor;
+    }
+
+    public void updateCrime(Crime crime) {
+        String uuidString = crime.getId().toString();
+        ContentValues values = getContentValues(crime);
+        mDatabase.update(CrimeTable.NAME,
+                values,
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] {uuidString});
     }
 
     public List<Crime> getCrimes() {
