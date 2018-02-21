@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
+import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ public class CrimeLab {
         mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
-    public Cursor queryCrimes(String whereClause, String[] wherArgs) {
+    public CrimeCursorWrapper queryCrimes(String whereClause, String[] wherArgs) {
         Cursor cursor = mDatabase.query(
                 CrimeTable.NAME,
                 null, // Null selects all columns
@@ -43,7 +45,7 @@ public class CrimeLab {
                 null,
                 null,
                 null);
-        return cursor;
+        return new CrimeCursorWrapper(cursor);
     }
 
     public void updateCrime(Crime crime) {
@@ -56,17 +58,43 @@ public class CrimeLab {
     }
 
     public List<Crime> getCrimes() {
-        return null;
+        List<Crime> crimes = new ArrayList<>();
+        CrimeCursorWrapper crimeCursorWrapper = queryCrimes(null, null);
+        try {
+            crimeCursorWrapper.moveToFirst();
+            while (!crimeCursorWrapper.isAfterLast()) {
+                crimes.add(crimeCursorWrapper.getCrime());
+                crimeCursorWrapper.moveToNext();
+            }
+        } finally {
+            crimeCursorWrapper.close();
+        }
+        return crimes;
     }
 
     public Crime getCrime(UUID id) {
-        return null;
+        CrimeCursorWrapper crimeCursorWrapper = queryCrimes(
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] {
+                   id.toString()
+                });
+        try {
+            if(crimeCursorWrapper.getCount() == 0) {
+                return null;
+            }
+
+            crimeCursorWrapper.moveToFirst();
+            return crimeCursorWrapper.getCrime();
+        } finally {
+            crimeCursorWrapper.close();
+        }
     }
 
     private static ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();
         values.put(CrimeTable.Cols.UUID, crime.getId().toString());
-        values.put(CrimeTable.Cols.TITLE, crime.getTitle().toString());
+        String title = crime.getTitle();
+        if(title != null) values.put(CrimeTable.Cols.TITLE, title);
         values.put(CrimeTable.Cols.DATE, crime.getDate().toString());
         values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
         return values;
