@@ -156,11 +156,13 @@ public class CrimeFragment extends Fragment {
             Uri contactUri = data.getData();
             // Specify which fields you want your query to return
             // values for
-            String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+            String[] queryFields = new String[] { ContactsContract.Contacts._ID,
+                    ContactsContract.Contacts.DISPLAY_NAME };
             // Perform your query - the contactUri is like a "where"
             // clause here
             Cursor c = getActivity().getContentResolver().query(contactUri, queryFields,
                     null, null, null);
+            long contactID = 0;
             try { // Double-check that you actually got results
                 if (c.getCount() == 0) {
                     return;
@@ -168,12 +170,19 @@ public class CrimeFragment extends Fragment {
                 // Pull out the first column of the first row of data -
                 // that is your suspect's name
                 c.moveToFirst();
-                String suspect = c.getString(0);
+                contactID = c.getLong(0);
+                String suspect = c.getString(1);
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
             } finally {
                 c.close();
             }
+
+            // Get Phone number
+            queryFields = new String[] { ContactsContract.Contacts._ID,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER };
+            c = getActivity().getContentResolver().query(contactUri, queryFields,
+                    "where " + ContactsContract.Contacts._ID + " = ?", new String[]{},null);
         }
     }
 
