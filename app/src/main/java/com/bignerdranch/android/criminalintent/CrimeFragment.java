@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.UUID;
@@ -38,6 +39,8 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckbox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallSuspectButton;
+    private String mSuspectPhoneNumber;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -139,6 +142,13 @@ public class CrimeFragment extends Fragment {
                 startActivity(i);
             }
         });
+        mCallSuspectButton = v.findViewById(R.id.call_suspect);
+        mCallSuspectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         return v;
     }
@@ -156,14 +166,15 @@ public class CrimeFragment extends Fragment {
             Uri contactUri = data.getData();
             // Specify which fields you want your query to return
             // values for
-            String[] queryFields = new String[] { ContactsContract.Contacts._ID,
+            String[] queryFields = new String[] { ContactsContract.Data._ID,
                     ContactsContract.Contacts.DISPLAY_NAME };
             // Perform your query - the contactUri is like a "where"
             // clause here
-            Cursor c = getActivity().getContentResolver().query(contactUri, queryFields,
-                    null, null, null);
-            long contactID = 0;
-            try { // Double-check that you actually got results
+            long contactID;
+
+            // Double-check that you actually got results
+            try (Cursor c = getActivity().getContentResolver().query(contactUri, queryFields,
+                    null, null, null)){
                 if (c.getCount() == 0) {
                     return;
                 }
@@ -174,15 +185,24 @@ public class CrimeFragment extends Fragment {
                 String suspect = c.getString(1);
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
-            } finally {
-                c.close();
             }
 
             // Get Phone number
-            queryFields = new String[] { ContactsContract.Contacts._ID,
+            queryFields = new String[] { ContactsContract.Data._ID,
                     ContactsContract.CommonDataKinds.Phone.NUMBER };
-            c = getActivity().getContentResolver().query(contactUri, queryFields,
-                    "where " + ContactsContract.Contacts._ID + " = ?", new String[]{},null);
+            try (Cursor c = getActivity().getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI, queryFields,
+                    ContactsContract.Data._ID + " = ?",
+                    new String[]{String.valueOf(contactID)}, null)){
+                if (c.getCount() == 0) {
+                    return;
+                }
+                c.moveToFirst();
+                String[] columns = c.getColumnNames();
+                mSuspectPhoneNumber = c.getString(1);
+                Toast.makeText(getActivity(), "Phone number = " + mSuspectPhoneNumber,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
