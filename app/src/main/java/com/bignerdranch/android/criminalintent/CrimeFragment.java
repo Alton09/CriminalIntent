@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,7 +20,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.Date;
 import java.util.UUID;
@@ -166,14 +166,15 @@ public class CrimeFragment extends Fragment {
             Uri contactUri = data.getData();
             // Specify which fields you want your query to return
             // values for
-            String[] queryFields = new String[] { ContactsContract.Data._ID,
+            String[] queryFields = new String[] { ContactsContract.Contacts._ID,
                     ContactsContract.Contacts.DISPLAY_NAME };
             // Perform your query - the contactUri is like a "where"
             // clause here
             long contactID;
 
             // Double-check that you actually got results
-            try (Cursor c = getActivity().getContentResolver().query(contactUri, queryFields,
+            ContentResolver cr = getActivity().getContentResolver();
+            try (Cursor c = cr.query(contactUri, queryFields,
                     null, null, null)){
                 if (c.getCount() == 0) {
                     return;
@@ -187,21 +188,18 @@ public class CrimeFragment extends Fragment {
                 mSuspectButton.setText(suspect);
             }
 
+
             // Get Phone number
-            queryFields = new String[] { ContactsContract.Data._ID,
+            queryFields = new String[] { ContactsContract.CommonDataKinds.Phone._ID,
                     ContactsContract.CommonDataKinds.Phone.NUMBER };
-            try (Cursor c = getActivity().getContentResolver().query(
-                    ContactsContract.Data.CONTENT_URI, queryFields,
-                    ContactsContract.Data._ID + " = ?",
-                    new String[]{String.valueOf(contactID)}, null)){
+            try (Cursor c = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, queryFields,
+                    null,
+                    null, null)) {
                 if (c.getCount() == 0) {
                     return;
                 }
                 c.moveToFirst();
-                String[] columns = c.getColumnNames();
                 mSuspectPhoneNumber = c.getString(1);
-                Toast.makeText(getActivity(), "Phone number = " + mSuspectPhoneNumber,
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }
